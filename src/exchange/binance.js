@@ -27,12 +27,14 @@ class BinanceExchange {
     const symbolInfo = info.symbols.find((item) => item.symbol === symbol);
     if (!symbolInfo) return null;
     const lot = symbolInfo.filters.find((f) => f.filterType === 'LOT_SIZE');
-    const minNotional = symbolInfo.filters.find((f) => f.filterType === 'MIN_NOTIONAL');
+    const minNotionalFilter =
+      symbolInfo.filters.find((f) => f.filterType === 'MIN_NOTIONAL') ||
+      symbolInfo.filters.find((f) => f.filterType === 'NOTIONAL');
 
     return {
-      minQty: Number(lot.minQty),
-      stepSize: Number(lot.stepSize),
-      minNotional: Number(minNotional.minNotional)
+      minQty: lot ? Number(lot.minQty) : 0,
+      stepSize: lot ? Number(lot.stepSize) : 0,
+      minNotional: minNotionalFilter ? Number(minNotionalFilter.minNotional) : 0
     };
   }
 
