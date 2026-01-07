@@ -1,0 +1,5 @@
+node_modules/
+.env
+logs/
+state.json
+trade_journal.csv
