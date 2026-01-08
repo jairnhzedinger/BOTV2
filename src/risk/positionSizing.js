@@ -1,7 +1,13 @@
+const getPrecision = (stepSize) => Math.max(0, (stepSize.toString().split('.')[1] || '').length);
+
+const normalizeToPrecision = (value, precision) => Number(Number(value).toFixed(precision));
+
 const floorToStep = (value, stepSize) => {
-  const precision = Math.max(0, (stepSize.toString().split('.')[1] || '').length);
-  const factor = 10 ** precision;
-  return Math.floor((value + Number.EPSILON) * factor / (stepSize * factor)) * stepSize;
+  if (!stepSize) return value;
+  const precision = getPrecision(stepSize);
+  const steps = Math.floor((value + Number.EPSILON) / stepSize);
+  const floored = steps * stepSize;
+  return normalizeToPrecision(floored, precision);
 };
 
 const calculatePositionSize = ({
