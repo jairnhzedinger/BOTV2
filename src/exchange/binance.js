@@ -39,7 +39,18 @@ class BinanceExchange {
   }
 
   async getBookTicker(symbol) {
-    return this.client.bookTicker({ symbol });
+    if (typeof this.client.bookTicker === 'function') {
+      return this.client.bookTicker({ symbol });
+    }
+    if (typeof this.client.allBookTickers === 'function') {
+      const tickers = await this.client.allBookTickers();
+      const ticker = tickers ? tickers[symbol] : null;
+      if (ticker) {
+        return ticker;
+      }
+      throw new Error(`Book ticker not available for ${symbol}`);
+    }
+    throw new Error('Book ticker endpoint not available on client');
   }
 
   async placeMarketBuy({ symbol, quantity }) {
